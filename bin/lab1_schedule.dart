@@ -8,6 +8,16 @@ import 'package:lab1_schedule/report.dart';
 /// Кількість занять, починаючи з якої викладач вважається завантаженим.
 const heavyLoad = 3;
 
+/// Дисципліна, про яку виводиться окрема інформація.
+const featuredSubject = 'Програмування мовою Dart';
+
+/// Роздільник колонок у звіті з масками.
+const maskedSeparator = ' / ';
+
+/// Скільки викладачів показувати в звіті з масками.
+const maskedTopCount = 2;
+
+/// Розбирає розклад, перевіряє його й виводить статистику та звіти.
 void main() {
   final now = DateTime.now();
   final lessons = parseAndValidate(rawLessons);
@@ -24,7 +34,15 @@ void main() {
     stdout.writeln('  $line');
   }
 
-  stdout.writeln('Лекцій: ${filterLessons(lessons, ofType('лекція')).length}');
+  final lectures = filterLessons(lessons, ofType(lectureType));
+  stdout.writeln('Лекцій: ${lectures.length}');
+
+  final lectureAverage = averageStart(lessons, ofType(lectureType));
+  if (lectureAverage != null) {
+    stdout.writeln(
+      'Середній початок лекцій: ${formatTime(lectureAverage.round())}',
+    );
+  }
 
   final stats = startTimeStats(lessons);
   if (stats != null) {
@@ -35,11 +53,11 @@ void main() {
     );
   }
 
-  final dart = firstOfSubject(lessons, 'Програмування мовою Dart');
-  if (dart != null) {
-    final days = timeSinceFirst(dart, now: now).inDays;
+  final featured = firstOfSubject(lessons, featuredSubject);
+  if (featured != null) {
+    final days = timeSinceFirst(featured, now: now).inDays;
     stdout.writeln(
-      'Перше заняття з Dart (${weekdayName(dart.weekday)}) '
+      'Перше заняття з $featuredSubject (${weekdayName(featured.weekday)}) '
       'відбулося $days дн. тому',
     );
   }
@@ -60,8 +78,8 @@ void main() {
         lessons,
         maskTeachers: true,
         descending: true,
-        separator: ' / ',
-        topCount: 2,
+        separator: maskedSeparator,
+        topCount: maskedTopCount,
       ),
     );
 }

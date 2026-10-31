@@ -62,6 +62,13 @@ List<String> toTimetableLines(Iterable<Lesson> items) => items
   );
 }
 
+/// Середній час початку занять, що задовольняють умову, у хвилинах.
+double? averageStart(Iterable<Lesson> items, Predicate<Lesson> test) {
+  final minutes = items.where(test).map((lesson) => lesson.startMinutes);
+  if (minutes.isEmpty) return null;
+  return minutes.fold<int>(0, (sum, value) => sum + value) / minutes.length;
+}
+
 /// Перше заняття з дисципліни або `null`.
 Lesson? firstOfSubject(Iterable<Lesson> items, String subject) =>
     items.where((lesson) => lesson.subject == subject).firstOrNull;

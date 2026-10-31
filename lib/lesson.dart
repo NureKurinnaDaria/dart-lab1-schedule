@@ -13,6 +13,18 @@ typedef Lesson = ({
 /// Результат розбору рядка: або заняття, або опис помилки.
 typedef ParseResult = ({Lesson? lesson, String? error});
 
+/// Ширина поля годин і хвилин у записі часу.
+const timeFieldWidth = 2;
+
+/// Символ, яким доповнюється поле до потрібної ширини.
+const timePadChar = '0';
+
+/// Кількість частин у записі часу `ГГ:ХХ`.
+const timePartCount = 2;
+
+/// Тип заняття «лекція».
+const lectureType = 'лекція';
+
 /// Кількість полів у рядку вхідних даних.
 const fieldCount = 7;
 
@@ -47,7 +59,7 @@ const _roomIndex = 5;
 const _dateIndex = 6;
 
 /// Допустимі типи занять.
-const lessonTypes = {'лекція', 'практика', 'лабораторна', 'консультація'};
+const lessonTypes = {lectureType, 'практика', 'лабораторна', 'консультація'};
 
 /// Початки пар у хвилинах від початку доби:
 /// 07:45, 09:30, 11:15, 13:10, 14:55, 16:40.
@@ -86,7 +98,7 @@ final teacherPattern = RegExp(
 /// хвилини виходять за межі доби.
 int? parseTime(String raw) {
   final parts = raw.split(timeSeparator);
-  if (parts.length != 2) return null;
+  if (parts.length != timePartCount) return null;
   final hours = int.tryParse(parts[0]);
   final minutes = int.tryParse(parts[1]);
   if (hours == null || minutes == null) return null;
@@ -110,8 +122,14 @@ DateTime? parseDate(String raw) {
 
 /// Перетворює хвилини від початку доби на рядок `ГГ:ХХ`.
 String formatTime(int totalMinutes) {
-  final hours = (totalMinutes ~/ minutesPerHour).toString().padLeft(2, '0');
-  final minutes = (totalMinutes % minutesPerHour).toString().padLeft(2, '0');
+  final hours = (totalMinutes ~/ minutesPerHour).toString().padLeft(
+    timeFieldWidth,
+    timePadChar,
+  );
+  final minutes = (totalMinutes % minutesPerHour).toString().padLeft(
+    timeFieldWidth,
+    timePadChar,
+  );
   return '$hours$timeSeparator$minutes';
 }
 
