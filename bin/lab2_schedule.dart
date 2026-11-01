@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:lab1_schedule/analysis.dart';
-import 'package:lab1_schedule/data.dart';
-import 'package:lab1_schedule/lesson.dart';
-import 'package:lab1_schedule/report.dart';
+import 'package:lab2_schedule/analysis.dart';
+import 'package:lab2_schedule/data.dart';
+import 'package:lab2_schedule/lesson.dart';
+import 'package:lab2_schedule/report.dart';
 
 /// Кількість занять, починаючи з якої викладач вважається завантаженим.
 const heavyLoad = 3;
