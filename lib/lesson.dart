@@ -1,14 +1,158 @@
-/// Тип одного заняття розкладу. Це запис (record), а не клас: у ЛР 1 класи
-/// не використовуються.
-typedef Lesson = ({
-  String subject,
-  String teacher,
-  String type,
-  int weekday,
-  int startMinutes,
-  String room,
-  DateTime firstDate,
-});
+/// Домішка: усе, що стосується місця заняття в тижневій сітці.
+mixin Scheduled {
+  /// Номер дня тижня (1-7).
+  int get weekday;
+
+  /// Початок заняття у хвилинах від початку доби.
+  int get startMinutes;
+
+  /// Назва дня тижня або `?`, якщо номер поза діапазоном.
+  String get dayName => weekday >= DateTime.monday && weekday <= DateTime.sunday
+      ? weekdayNames[weekday - 1]
+      : '?';
+
+  /// Початок заняття у форматі `ГГ:ХХ`.
+  String get startTime => formatTime(startMinutes);
+}
+
+/// Базове заняття розкладу; конкретний тип задає підклас.
+abstract class Lesson with Scheduled {
+  Lesson({
+    required this.subject,
+    required this.teacher,
+    required this.weekday,
+    required this.startMinutes,
+    required this.room,
+    required this.firstDate,
+  });
+
+  final String subject;
+  final String teacher;
+  @override
+  final int weekday;
+  @override
+  final int startMinutes;
+  final String room;
+  final DateTime firstDate;
+
+  /// Назва типу заняття; у кожному підкласі своя.
+  String get type;
+
+  /// Створює підклас за назвою типу або повертає `null`, якщо тип невідомий.
+  static Lesson? create(
+    String type, {
+    required String subject,
+    required String teacher,
+    required int weekday,
+    required int startMinutes,
+    required String room,
+    required DateTime firstDate,
+  }) {
+    switch (type) {
+      case lectureType:
+        return Lecture(
+          subject: subject,
+          teacher: teacher,
+          weekday: weekday,
+          startMinutes: startMinutes,
+          room: room,
+          firstDate: firstDate,
+        );
+      case practiceType:
+        return Practice(
+          subject: subject,
+          teacher: teacher,
+          weekday: weekday,
+          startMinutes: startMinutes,
+          room: room,
+          firstDate: firstDate,
+        );
+      case labType:
+        return Lab(
+          subject: subject,
+          teacher: teacher,
+          weekday: weekday,
+          startMinutes: startMinutes,
+          room: room,
+          firstDate: firstDate,
+        );
+      case consultationType:
+        return Consultation(
+          subject: subject,
+          teacher: teacher,
+          weekday: weekday,
+          startMinutes: startMinutes,
+          room: room,
+          firstDate: firstDate,
+        );
+      default:
+        return null;
+    }
+  }
+
+  @override
+  String toString() => '$dayName $startTime · $type: $subject ($room)';
+}
+
+/// Лекція.
+class Lecture extends Lesson {
+  Lecture({
+    required super.subject,
+    required super.teacher,
+    required super.weekday,
+    required super.startMinutes,
+    required super.room,
+    required super.firstDate,
+  });
+
+  @override
+  String get type => lectureType;
+}
+
+/// Практичне заняття.
+class Practice extends Lesson {
+  Practice({
+    required super.subject,
+    required super.teacher,
+    required super.weekday,
+    required super.startMinutes,
+    required super.room,
+    required super.firstDate,
+  });
+
+  @override
+  String get type => practiceType;
+}
+
+/// Лабораторна робота.
+class Lab extends Lesson {
+  Lab({
+    required super.subject,
+    required super.teacher,
+    required super.weekday,
+    required super.startMinutes,
+    required super.room,
+    required super.firstDate,
+  });
+
+  @override
+  String get type => labType;
+}
+
+/// Консультація.
+class Consultation extends Lesson {
+  Consultation({
+    required super.subject,
+    required super.teacher,
+    required super.weekday,
+    required super.startMinutes,
+    required super.room,
+    required super.firstDate,
+  });
+
+  @override
+  String get type => consultationType;
+}
 
 /// Результат розбору рядка: або заняття, або опис помилки.
 typedef ParseResult = ({Lesson? lesson, String? error});
@@ -24,6 +168,15 @@ const timePartCount = 2;
 
 /// Тип заняття «лекція».
 const lectureType = 'лекція';
+
+/// Тип заняття «практика».
+const practiceType = 'практика';
+
+/// Тип заняття «лабораторна».
+const labType = 'лабораторна';
+
+/// Тип заняття «консультація».
+const consultationType = 'консультація';
 
 /// Кількість полів у рядку вхідних даних.
 const fieldCount = 7;
@@ -59,7 +212,7 @@ const _roomIndex = 5;
 const _dateIndex = 6;
 
 /// Допустимі типи занять.
-const lessonTypes = {lectureType, 'практика', 'лабораторна', 'консультація'};
+const lessonTypes = {lectureType, practiceType, labType, consultationType};
 
 /// Початки пар у хвилинах від початку доби:
 /// 07:45, 09:30, 11:15, 13:10, 14:55, 16:40.
@@ -173,18 +326,22 @@ ParseResult parseLine(String line, {String separator = defaultSeparator}) {
     return (lesson: null, error: 'некоректна дата «${parts[_dateIndex]}»');
   }
 
-  return (
-    lesson: (
-      subject: subject,
-      teacher: teacher,
-      type: parts[_typeIndex],
-      weekday: weekday,
-      startMinutes: startMinutes,
-      room: parts[_roomIndex],
-      firstDate: firstDate,
-    ),
-    error: null,
+  final lesson = Lesson.create(
+    parts[_typeIndex],
+    subject: subject,
+    teacher: teacher,
+    weekday: weekday,
+    startMinutes: startMinutes,
+    room: parts[_roomIndex],
+    firstDate: firstDate,
   );
+  if (lesson == null) {
+    return (
+      lesson: null,
+      error: 'невідомий тип заняття «${parts[_typeIndex]}»',
+    );
+  }
+  return (lesson: lesson, error: null);
 }
 
 /// Перевіряє значення заняття й повертає перелік порушень.
@@ -193,9 +350,6 @@ ParseResult parseLine(String line, {String separator = defaultSeparator}) {
 List<String> validateLesson(Lesson lesson) {
   final problems = <String>[];
 
-  if (!lessonTypes.contains(lesson.type)) {
-    problems.add('невідомий тип заняття «${lesson.type}»');
-  }
   if (lesson.weekday < DateTime.monday || lesson.weekday > DateTime.sunday) {
     problems.add('день тижня ${lesson.weekday} поза діапазоном 1–7');
   }
