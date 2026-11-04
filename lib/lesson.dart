@@ -26,6 +26,27 @@ sealed class Lesson with Scheduled {
     required this.firstDate,
   });
 
+  /// Кеш уже розібраних рядків: заняття незмінні, тому той самий рядок
+  /// безпечно повертає той самий об'єкт.
+  static final Map<String, Lesson> _cache = {};
+
+  /// Розбирає рядок [line] у заняття; для повторного рядка повертає
+  /// об'єкт із кешу.
+  ///
+  /// Викидає [FormatException], якщо рядок некоректний.
+  factory Lesson.fromCsv(String line, {String separator = defaultSeparator}) {
+    final key = '$separator$line';
+    final cached = _cache[key];
+    if (cached != null) return cached;
+
+    final result = parseLine(line, separator: separator);
+    final lesson = result.lesson;
+    if (lesson == null) {
+      throw FormatException(result.error ?? 'некоректний рядок', line);
+    }
+    return _cache[key] = lesson;
+  }
+
   final String subject;
   final String teacher;
   @override
