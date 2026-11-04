@@ -115,6 +115,28 @@ sealed class Lesson with Scheduled {
   }
 
   @override
+  bool operator ==(Object other) =>
+      other is Lesson &&
+      other.runtimeType == runtimeType &&
+      other.subject == subject &&
+      other.teacher == teacher &&
+      other.weekday == weekday &&
+      other.startMinutes == startMinutes &&
+      other.room == room &&
+      other.firstDate == firstDate;
+
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    subject,
+    teacher,
+    weekday,
+    startMinutes,
+    room,
+    firstDate,
+  );
+
+  @override
   String toString() => '$dayName $startTime · $type: $subject ($room)';
 }
 
