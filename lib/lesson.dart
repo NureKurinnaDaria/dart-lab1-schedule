@@ -16,7 +16,7 @@ mixin Scheduled {
 }
 
 /// Базове заняття розкладу; конкретний тип задає підклас.
-abstract class Lesson with Scheduled {
+sealed class Lesson with Scheduled {
   Lesson({
     required this.subject,
     required this.teacher,
@@ -37,6 +37,9 @@ abstract class Lesson with Scheduled {
 
   /// Назва типу заняття; у кожному підкласі своя.
   String get type;
+
+  /// Тривалість заняття в хвилинах; у кожному підкласі своя.
+  int get durationMinutes;
 
   /// Створює підклас за назвою типу або повертає `null`, якщо тип невідомий.
   static Lesson? create(
@@ -107,6 +110,9 @@ class Lecture extends Lesson {
 
   @override
   String get type => lectureType;
+
+  @override
+  int get durationMinutes => pairDurationMinutes;
 }
 
 /// Практичне заняття.
@@ -122,6 +128,9 @@ class Practice extends Lesson {
 
   @override
   String get type => practiceType;
+
+  @override
+  int get durationMinutes => pairDurationMinutes;
 }
 
 /// Лабораторна робота.
@@ -137,6 +146,9 @@ class Lab extends Lesson {
 
   @override
   String get type => labType;
+
+  @override
+  int get durationMinutes => pairDurationMinutes;
 }
 
 /// Консультація.
@@ -152,7 +164,18 @@ class Consultation extends Lesson {
 
   @override
   String get type => consultationType;
+
+  @override
+  int get durationMinutes => pairDurationMinutes;
 }
+
+/// Короткий підпис типу заняття для компактних відображень.
+String shortLabel(Lesson lesson) => switch (lesson) {
+  Lecture() => 'Лк',
+  Practice() => 'Пз',
+  Lab() => 'Лб',
+  Consultation() => 'Конс',
+};
 
 /// Результат розбору рядка: або заняття, або опис помилки.
 typedef ParseResult = ({Lesson? lesson, String? error});
@@ -201,6 +224,9 @@ const maxMinute = 59;
 
 /// Довжина дати у форматі `РРРР-ММ-ДД`.
 const isoDateLength = 10;
+
+/// Тривалість заняття в хвилинах (спрощення: фактична пара — 95 хв).
+const pairDurationMinutes = 90;
 
 /// Індекси полів у розібраному рядку.
 const _subjectIndex = 0;
