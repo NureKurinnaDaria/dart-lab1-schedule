@@ -187,16 +187,14 @@ sealed class Lesson with Scheduled implements Identifiable {
 }
 
 /// Лекція.
-class Lecture extends Lesson with RemoteCapable {
-  Lecture({
-    required super.subject,
-    required super.teacher,
-    required super.weekday,
-    required super.startMinutes,
-    required super.room,
-    required super.firstDate,
-  });
-
+class Lecture({
+  required super.subject,
+  required super.teacher,
+  required super.weekday,
+  required super.startMinutes,
+  required super.room,
+  required super.firstDate,
+}) extends Lesson with RemoteCapable {
   @override
   String get type => lectureType;
 
