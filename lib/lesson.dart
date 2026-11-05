@@ -37,6 +37,12 @@ enum Weekday {
   bool get isWeekend => this == saturday || this == sunday;
 }
 
+/// Об'єкт, який уміє повідомляти власний ідентифікатор.
+abstract interface class Identifiable {
+  /// Унікальний ідентифікатор об'єкта.
+  String get id;
+}
+
 /// Домішка: усе, що стосується місця заняття в тижневій сітці.
 mixin Scheduled {
   /// Номер дня тижня (1-7).
@@ -53,7 +59,7 @@ mixin Scheduled {
 }
 
 /// Базове заняття розкладу; конкретний тип задає підклас.
-sealed class Lesson with Scheduled {
+sealed class Lesson with Scheduled implements Identifiable {
   Lesson({
     required this.subject,
     required this.teacher,
@@ -95,6 +101,9 @@ sealed class Lesson with Scheduled {
 
   /// Назва типу заняття; у кожному підкласі своя.
   String get type;
+
+  @override
+  String get id => '$weekday-$startMinutes-$type-$subject-$room';
 
   /// Тривалість заняття в хвилинах; у кожному підкласі своя.
   int get durationMinutes;
@@ -257,6 +266,23 @@ String shortLabel(Lesson lesson) => switch (lesson) {
   Consultation() => 'Конс',
   RemoteCapable() => lesson.type,
 };
+
+/// Сховище сутностей, які вміють повідомляти власний ідентифікатор.
+class Repository<T extends Identifiable> {
+  final Map<String, T> _items = {};
+
+  /// Кількість збережених елементів.
+  int get length => _items.length;
+
+  /// Додає [item]; елемент з таким самим id замінюється.
+  void add(T item) => _items[item.id] = item;
+
+  /// Повертає елемент за [id] або `null`.
+  T? findById(String id) => _items[id];
+
+  /// Елементи, що задовольняють умову [test].
+  Iterable<T> where(bool Function(T) test) => _items.values.where(test);
+}
 
 /// Зручні запити до колекції занять.
 extension LessonIterable on Iterable<Lesson> {
