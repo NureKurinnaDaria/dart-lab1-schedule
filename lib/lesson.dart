@@ -267,6 +267,16 @@ String shortLabel(Lesson lesson) => switch (lesson) {
   RemoteCapable() => lesson.type,
 };
 
+/// Коментар про зручність часу заняття.
+String timeNote(Lesson lesson) => switch (lesson) {
+  Lesson(startMinutes: final start) when start < earlyBeforeMinutes =>
+    'рання пара',
+  Lesson(startMinutes: final start) when start >= lateFromMinutes =>
+    'пізня пара',
+  Consultation() => 'консультація',
+  _ => 'звичайний час',
+};
+
 /// Сховище сутностей, які вміють повідомляти власний ідентифікатор.
 class Repository<T extends Identifiable> {
   final Map<String, T> _items = {};
@@ -341,6 +351,12 @@ const isoDateLength = 10;
 
 /// Тривалість заняття в хвилинах (спрощення: фактична пара — 95 хв).
 const pairDurationMinutes = 90;
+
+/// Пари, що починаються раніше цього часу (09:30), вважаються ранніми.
+const earlyBeforeMinutes = 9 * minutesPerHour + 30;
+
+/// Пари, що починаються не раніше цього часу (14:55), вважаються пізніми.
+const lateFromMinutes = 14 * minutesPerHour + 55;
 
 /// Індекси полів у розібраному рядку.
 const _subjectIndex = 0;
