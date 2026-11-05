@@ -1,3 +1,12 @@
+/// Домішка для занять, що можуть проходити дистанційно.
+mixin RemoteCapable on Lesson {
+  /// Чи проходить заняття дистанційно.
+  bool get isOnline => room == onlineRoom;
+
+  /// Підпис місця проведення для виводу.
+  String get placeLabel => isOnline ? 'дистанційно' : 'ауд. $room';
+}
+
 /// День тижня з номером за ISO 8601 (1 — понеділок).
 enum Weekday {
   monday(DateTime.monday, 'Понеділок'),
@@ -169,7 +178,7 @@ sealed class Lesson with Scheduled {
 }
 
 /// Лекція.
-class Lecture extends Lesson {
+class Lecture extends Lesson with RemoteCapable {
   Lecture({
     required super.subject,
     required super.teacher,
@@ -223,7 +232,7 @@ class Lab extends Lesson {
 }
 
 /// Консультація.
-class Consultation extends Lesson {
+class Consultation extends Lesson with RemoteCapable {
   Consultation({
     required super.subject,
     required super.teacher,
@@ -246,6 +255,7 @@ String shortLabel(Lesson lesson) => switch (lesson) {
   Practice() => 'Пз',
   Lab() => 'Лб',
   Consultation() => 'Конс',
+  RemoteCapable() => lesson.type,
 };
 
 /// Зручні запити до колекції занять.
