@@ -1,3 +1,33 @@
+/// День тижня з номером за ISO 8601 (1 — понеділок).
+enum Weekday {
+  monday(DateTime.monday, 'Понеділок'),
+  tuesday(DateTime.tuesday, 'Вівторок'),
+  wednesday(DateTime.wednesday, 'Середа'),
+  thursday(DateTime.thursday, 'Четвер'),
+  friday(DateTime.friday, 'П’ятниця'),
+  saturday(DateTime.saturday, 'Субота'),
+  sunday(DateTime.sunday, 'Неділя');
+
+  const Weekday(this.number, this.label);
+
+  /// Номер дня тижня (1-7).
+  final int number;
+
+  /// Українська назва дня.
+  final String label;
+
+  /// Повертає день за номером або `null`, якщо номер поза діапазоном 1-7.
+  static Weekday? fromNumber(int number) {
+    for (final day in values) {
+      if (day.number == number) return day;
+    }
+    return null;
+  }
+
+  /// Чи є день вихідним.
+  bool get isWeekend => this == saturday || this == sunday;
+}
+
 /// Домішка: усе, що стосується місця заняття в тижневій сітці.
 mixin Scheduled {
   /// Номер дня тижня (1-7).
@@ -7,9 +37,7 @@ mixin Scheduled {
   int get startMinutes;
 
   /// Назва дня тижня або `?`, якщо номер поза діапазоном.
-  String get dayName => weekday >= DateTime.monday && weekday <= DateTime.sunday
-      ? weekdayNames[weekday - 1]
-      : '?';
+  String get dayName => Weekday.fromNumber(weekday)?.label ?? '?';
 
   /// Початок заняття у форматі `ГГ:ХХ`.
   String get startTime => formatTime(startMinutes);
@@ -219,6 +247,13 @@ String shortLabel(Lesson lesson) => switch (lesson) {
   Lab() => 'Лб',
   Consultation() => 'Конс',
 };
+
+/// Зручні запити до колекції занять.
+extension LessonIterable on Iterable<Lesson> {
+  /// Заняття, що проходять у вказаний день тижня.
+  Iterable<Lesson> onDay(Weekday day) =>
+      where((lesson) => lesson.weekday == day.number);
+}
 
 /// Результат розбору рядка: або заняття, або опис помилки.
 typedef ParseResult = ({Lesson? lesson, String? error});
