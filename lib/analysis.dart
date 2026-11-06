@@ -21,6 +21,10 @@ Predicate<Lesson> ofType(String type) =>
     (lesson) => lesson.type == type;
 
 /// Розбирає рядки й залишає лише коректні заняття.
+///
+/// Причину відмови функція не повертає: записи, що не пройшли розбір чи
+/// перевірку, просто пропускаються. Діагностика виконується окремо
+/// (див. `_printProblems` у `bin/`).
 List<Lesson> parseAndValidate(Iterable<String> lines) => lines
     .map(parseLine)
     .map((result) => result.lesson)

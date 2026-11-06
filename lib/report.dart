@@ -17,15 +17,17 @@ const maskChar = '*';
 const visibleSurnameChars = 1;
 
 /// Маскує прізвище: `Баличев М. Д.` стає `Б****** М. Д.`.
-String maskTeacher(String teacher) =>
-    teacher.replaceAllMapped(teacherPattern, (match) {
-      final groups = match as RegExpMatch;
-      final surname = groups.namedGroup('surname') ?? '';
-      final visible = surname.substring(0, visibleSurnameChars);
-      final hidden = maskChar * (surname.length - visibleSurnameChars);
-      return '$visible$hidden ${groups.namedGroup('first')}. '
-          '${groups.namedGroup('second')}.';
-    });
+///
+/// Якщо рядок не відповідає формату «Прізвище І. Б.», повертає його без змін.
+String maskTeacher(String teacher) {
+  final match = teacherPattern.firstMatch(teacher);
+  if (match == null) return teacher;
+  final surname = match.namedGroup('surname') ?? '';
+  final visible = surname.substring(0, visibleSurnameChars);
+  final hidden = maskChar * (surname.length - visibleSurnameChars);
+  return '$visible$hidden ${match.namedGroup('first')}. '
+      '${match.namedGroup('second')}.';
+}
 
 /// Формує текстовий звіт про розклад.
 String buildReport(
