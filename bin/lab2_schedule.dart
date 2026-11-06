@@ -82,6 +82,8 @@ void main() {
         topCount: maskedTopCount,
       ),
     );
+
+  _printExtras(lessons);
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -89,15 +91,38 @@ void _printProblems(List<String> lines) {
   final nextNumber = makeCounter();
   for (final line in lines) {
     final number = nextNumber();
-    final result = parseLine(line);
-    final lesson = result.lesson;
+    final (:lesson, :error) = parseLine(line);
     if (lesson == null) {
-      stdout.writeln('  Запис $number: не розібрано, ${result.error}');
+      stdout.writeln('  Запис $number: не розібрано, $error');
       continue;
     }
     final violations = validateLesson(lesson);
     if (violations.isNotEmpty) {
       stdout.writeln('  Запис $number: ${violations.join('; ')}');
     }
+  }
+}
+
+/// Показує роботу фабрики `fromCsv`, сховища, розширення й домішки.
+void _printExtras(List<Lesson> lessons) {
+  final sample = Lesson.fromCsv(rawLessons.first);
+  final again = Lesson.fromCsv(rawLessons.first);
+  stdout
+    ..writeln('\nfromCsv: $sample')
+    ..writeln('Кеш повертає той самий об’єкт: ${identical(sample, again)}');
+
+  final repository = Repository<Lesson>();
+  lessons.forEach(repository.add);
+  stdout.writeln('\nУ сховищі: ${repository.length} занять');
+
+  stdout.writeln('П’ятниця:');
+  for (final lesson in lessons.onDay(Weekday.friday)) {
+    final place = lesson is RemoteCapable
+        ? lesson.placeLabel
+        : 'ауд. ${lesson.room}';
+    stdout.writeln(
+      '  ${shortLabel(lesson)} · ${timeNote(lesson)} · $place: '
+      '${lesson.subject}',
+    );
   }
 }
