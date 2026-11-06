@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:lab3_schedule/analysis.dart';
+import 'package:lab3_schedule/async_repository.dart';
 import 'package:lab3_schedule/data.dart';
 import 'package:lab3_schedule/lesson.dart';
 import 'package:lab3_schedule/report.dart';
@@ -18,7 +19,7 @@ const maskedSeparator = ' / ';
 const maskedTopCount = 2;
 
 /// Розбирає розклад, перевіряє його й виводить статистику та звіти.
-void main() {
+Future<void> main() async {
   final now = DateTime.now();
   final lessons = parseAndValidate(rawLessons);
 
@@ -84,6 +85,7 @@ void main() {
     );
 
   _printExtras(lessons);
+  await _printAsyncDemo(lessons);
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -125,4 +127,23 @@ void _printExtras(List<Lesson> lessons) {
       '${lesson.subject}',
     );
   }
+}
+
+/// Показує асинхронне сховище: збереження, завантаження й видалення.
+Future<void> _printAsyncDemo(List<Lesson> lessons) async {
+  final repository = AsyncRepository<Lesson>();
+  for (final lesson in lessons.take(3)) {
+    await repository.save(lesson);
+  }
+  stdout.writeln('\nАсинхронне сховище: ${repository.length} занять');
+
+  final first = lessons.first;
+  final loaded = await repository.load(first.id);
+  stdout.writeln('load: ${loaded ?? 'не знайдено'}');
+
+  final removed = await repository.delete(first.id);
+  final again = await repository.load(first.id);
+  stdout.writeln(
+    'delete: $removed, після видалення: ${again ?? 'не знайдено'}',
+  );
 }
