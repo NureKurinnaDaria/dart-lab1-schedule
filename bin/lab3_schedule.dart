@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:lab3_schedule/analysis.dart';
@@ -17,6 +18,9 @@ const maskedSeparator = ' / ';
 
 /// Скільки викладачів показувати в звіті з масками.
 const maskedTopCount = 2;
+
+/// Тривалість однієї імітованої операції в порівнянні режимів виконання.
+const operationDelay = Duration(milliseconds: 500);
 
 /// Розбирає розклад, перевіряє його й виводить статистику та звіти.
 Future<void> main() async {
@@ -87,6 +91,8 @@ Future<void> main() async {
   _printExtras(lessons);
   await _printAsyncDemo(lessons);
   await _forgottenAwaitDemo(lessons);
+  await _timingDemo();
+  await _parallelErrorDemo();
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -159,4 +165,51 @@ Future<void> _forgottenAwaitDemo(List<Lesson> lessons) async {
 
   await repository.save(lessons.first);
   stdout.writeln('З await: ${repository.length} занять');
+}
+
+/// Порівнює час послідовного й одночасного виконання трьох операцій.
+Future<void> _timingDemo() async {
+  Future<void> operation() => Future<void>.delayed(operationDelay);
+
+  final sequential = Stopwatch()..start();
+  await operation();
+  await operation();
+  await operation();
+  sequential.stop();
+
+  final concurrent = Stopwatch()..start();
+  await Future.wait([operation(), operation(), operation()]);
+  concurrent.stop();
+
+  stdout
+    ..writeln('\nПослідовно: ${sequential.elapsedMilliseconds} мс')
+    ..writeln('Одночасно: ${concurrent.elapsedMilliseconds} мс');
+}
+
+/// Порівнює обробку помилок через `Future.wait` і розширення `.wait`.
+Future<void> _parallelErrorDemo() async {
+  Future<int> succeed(int id) async {
+    await Future<void>.delayed(operationDelay);
+    return id;
+  }
+
+  Future<int> fail(int id) async {
+    await Future<void>.delayed(operationDelay);
+    throw Exception('операція $id завершилась помилкою');
+  }
+
+  stdout.writeln('\nFuture.wait:');
+  try {
+    await Future.wait([succeed(1), fail(2), fail(3)]);
+  } on Exception catch (error) {
+    stdout.writeln('  помилка: $error');
+  }
+
+  stdout.writeln('.wait:');
+  try {
+    await [succeed(1), fail(2), fail(3)].wait;
+  } on ParallelWaitError<List<int?>, List<AsyncError?>> catch (error) {
+    stdout.writeln('  значення: ${error.values}');
+    stdout.writeln('  помилки: ${error.errors.map((e) => e?.error).toList()}');
+  }
 }
