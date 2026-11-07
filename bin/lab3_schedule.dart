@@ -86,6 +86,7 @@ Future<void> main() async {
 
   _printExtras(lessons);
   await _printAsyncDemo(lessons);
+  await _forgottenAwaitDemo(lessons);
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -146,4 +147,16 @@ Future<void> _printAsyncDemo(List<Lesson> lessons) async {
   stdout.writeln(
     'delete: $removed, після видалення: ${again ?? 'не знайдено'}',
   );
+}
+
+/// Показує помилку «забутий await»: без нього результат ще не готовий.
+Future<void> _forgottenAwaitDemo(List<Lesson> lessons) async {
+  final repository = AsyncRepository<Lesson>();
+
+  // ignore: unawaited_futures
+  repository.save(lessons.first);
+  stdout.writeln('\nБез await: ${repository.length} занять');
+
+  await repository.save(lessons.first);
+  stdout.writeln('З await: ${repository.length} занять');
 }
