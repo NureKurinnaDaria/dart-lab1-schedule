@@ -97,6 +97,9 @@ Future<void> main() async {
   await _uncaughtErrorDemo();
   await _streamGeneratorDemo(lessons);
   await _controllerDemo(lessons);
+  await _streamErrorDemo();
+  await _singleVsBroadcastDemo();
+  await _pipelineDemo(lessons);
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -298,5 +301,89 @@ Future<void> _controllerDemo(List<Lesson> lessons) async {
   source.add(LessonRemoved(lessons.first));
   await Future<void>.delayed(Duration.zero);
   stdout.writeln('Після скасування отримано подій: ${received.length}');
+  await source.close();
+}
+
+/// Потік, у середині якого виникає помилка: 1, 2, помилка.
+Stream<int> _numbersWithError() async* {
+  yield 1;
+  yield 2;
+  throw Exception('помилка посеред потоку');
+}
+
+/// Порівнює поведінку `await for` і `listen` з `cancelOnError: false`.
+Future<void> _streamErrorDemo() async {
+  stdout.writeln('\nawait for:');
+  try {
+    await for (final value in _numbersWithError()) {
+      stdout.writeln('  отримано: $value');
+    }
+  } on Exception catch (error) {
+    stdout.writeln('  потік перервано: $error');
+  }
+
+  final controller = StreamController<int>();
+  stdout.writeln('listen з cancelOnError: false:');
+  final subscription = controller.stream.listen(
+    (value) => stdout.writeln('  отримано: $value'),
+    onError: (Object error) => stdout.writeln('  помилка: $error'),
+    cancelOnError: false,
+  );
+  controller
+    ..add(1)
+    ..add(2)
+    ..addError(Exception('помилка посеред потоку'))
+    ..add(3)
+    ..add(4);
+  await controller.close();
+  await subscription.cancel();
+}
+
+/// Показує різницю між потоком одноразової підписки та широкомовним.
+Future<void> _singleVsBroadcastDemo() async {
+  stdout.writeln('\nОдноразова підписка:');
+  final single = StreamController<int>();
+  final first = single.stream.listen((value) => stdout.writeln('  1: $value'));
+  try {
+    // ignore: cancel_subscriptions
+    single.stream.listen((value) => stdout.writeln('  2: $value'));
+  } on StateError catch (error) {
+    stdout.writeln('  друга підписка: $error');
+  }
+  await first.cancel();
+  await single.close();
+
+  stdout.writeln('Широкомовна підписка:');
+  final broadcast = StreamController<int>.broadcast();
+  final a = broadcast.stream.listen((value) => stdout.writeln('  a: $value'));
+  final b = broadcast.stream.listen((value) => stdout.writeln('  b: $value'));
+  broadcast.add(1);
+  await Future<void>.delayed(Duration.zero);
+  await a.cancel();
+  await b.cancel();
+  await broadcast.close();
+}
+
+/// Будує конвеєр над подіями: фільтр, перетворення, обмеження.
+Future<void> _pipelineDemo(List<Lesson> lessons) async {
+  final source = ScheduleEventSource();
+  for (final lesson in lessons.take(5)) {
+    source.add(LessonAdded(lesson));
+  }
+  source.add(LessonRemoved(lessons.first));
+
+  stdout.writeln('\nКонвеєр where → map → take:');
+  final labels = source.events
+      .where((event) => event is LessonAdded)
+      .map(
+        (event) => switch (event) {
+          LessonAdded(:final lesson) => 'нове заняття: $lesson',
+          LessonRemoved(:final lesson) => 'видалено: $lesson',
+        },
+      )
+      .take(3);
+  await for (final label in labels) {
+    stdout.writeln('  $label');
+  }
   await source.close();
 }
