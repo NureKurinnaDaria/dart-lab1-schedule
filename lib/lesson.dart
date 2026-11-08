@@ -207,16 +207,14 @@ class Lecture({
 }
 
 /// Практичне заняття.
-class Practice extends Lesson {
-  Practice({
-    required super.subject,
-    required super.teacher,
-    required super.weekday,
-    required super.startMinutes,
-    required super.room,
-    required super.firstDate,
-  });
-
+class Practice({
+  required super.subject,
+  required super.teacher,
+  required super.weekday,
+  required super.startMinutes,
+  required super.room,
+  required super.firstDate,
+}) extends Lesson {
   @override
   String get type => practiceType;
 
@@ -225,16 +223,14 @@ class Practice extends Lesson {
 }
 
 /// Лабораторна робота.
-class Lab extends Lesson {
-  Lab({
-    required super.subject,
-    required super.teacher,
-    required super.weekday,
-    required super.startMinutes,
-    required super.room,
-    required super.firstDate,
-  });
-
+class Lab({
+  required super.subject,
+  required super.teacher,
+  required super.weekday,
+  required super.startMinutes,
+  required super.room,
+  required super.firstDate,
+}) extends Lesson {
   @override
   String get type => labType;
 
@@ -243,16 +239,14 @@ class Lab extends Lesson {
 }
 
 /// Консультація.
-class Consultation extends Lesson with RemoteCapable {
-  Consultation({
-    required super.subject,
-    required super.teacher,
-    required super.weekday,
-    required super.startMinutes,
-    required super.room,
-    required super.firstDate,
-  });
-
+class Consultation({
+  required super.subject,
+  required super.teacher,
+  required super.weekday,
+  required super.startMinutes,
+  required super.room,
+  required super.firstDate,
+}) extends Lesson with RemoteCapable {
   @override
   String get type => consultationType;
 
