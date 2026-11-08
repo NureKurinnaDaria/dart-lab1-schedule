@@ -93,6 +93,7 @@ Future<void> main() async {
   await _forgottenAwaitDemo(lessons);
   await _timingDemo();
   await _parallelErrorDemo();
+  await _uncaughtErrorDemo();
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -211,5 +212,37 @@ Future<void> _parallelErrorDemo() async {
   } on ParallelWaitError<List<int?>, List<AsyncError?>> catch (error) {
     stdout.writeln('  значення: ${error.values}');
     stdout.writeln('  помилки: ${error.errors.map((e) => e?.error).toList()}');
+  }
+}
+
+/// Показує, що `try/catch` без `await` не ловить помилку асинхронної операції.
+Future<void> _uncaughtErrorDemo() async {
+  Future<void> failLater() async {
+    await Future<void>.delayed(operationDelay);
+    throw Exception('помилка після затримки');
+  }
+
+  stdout.writeln('\nБез await:');
+  await runZonedGuarded(
+    () async {
+      try {
+        // ignore: unawaited_futures
+        failLater();
+        stdout.writeln('  try завершився без помилки');
+      } on Exception catch (error) {
+        stdout.writeln('  catch спіймав: $error');
+      }
+      await Future<void>.delayed(operationDelay * 2);
+    },
+    (error, stack) {
+      stdout.writeln('  потрапила в зону: $error');
+    },
+  );
+
+  stdout.writeln('З await:');
+  try {
+    await failLater();
+  } on Exception catch (error) {
+    stdout.writeln('  catch спіймав: $error');
   }
 }
