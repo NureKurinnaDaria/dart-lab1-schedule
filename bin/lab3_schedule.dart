@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:lab3_schedule/analysis.dart';
 import 'package:lab3_schedule/async_repository.dart';
 import 'package:lab3_schedule/data.dart';
+import 'package:lab3_schedule/heavy.dart';
 import 'package:lab3_schedule/lesson.dart';
 import 'package:lab3_schedule/report.dart';
 import 'package:lab3_schedule/schedule_events.dart';
@@ -22,6 +24,9 @@ const maskedTopCount = 2;
 
 /// Тривалість однієї імітованої операції в порівнянні режимів виконання.
 const operationDelay = Duration(milliseconds: 500);
+
+/// Глобальний лічильник: кожен ізолят має власну копію.
+int globalCounter = 0;
 
 /// Розбирає розклад, перевіряє його й виводить статистику та звіти.
 Future<void> main() async {
@@ -100,6 +105,8 @@ Future<void> main() async {
   await _streamErrorDemo();
   await _singleVsBroadcastDemo();
   await _pipelineDemo(lessons);
+  await _isolateDemo();
+  await _isolateGlobalDemo();
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -386,4 +393,48 @@ Future<void> _pipelineDemo(List<Lesson> lessons) async {
     stdout.writeln('  $label');
   }
   await source.close();
+}
+
+/// Порівнює важке обчислення в основному ізоляті й в `Isolate.run`.
+Future<void> _isolateDemo() async {
+  var ticks = 0;
+  final timer = Timer.periodic(
+    const Duration(milliseconds: 10),
+    (_) => ticks++,
+  );
+
+  final syncWatch = Stopwatch()..start();
+  final syncResult = countConflicts(slotCount);
+  syncWatch.stop();
+  final ticksDuringSync = ticks;
+
+  ticks = 0;
+  final isolateWatch = Stopwatch()..start();
+  final isolateResult = await Isolate.run(() => countConflicts(slotCount));
+  isolateWatch.stop();
+  final ticksDuringIsolate = ticks;
+  timer.cancel();
+
+  stdout
+    ..writeln(
+      '\nОсновний ізолят: ${syncWatch.elapsedMilliseconds} мс, '
+      'результат $syncResult, тактів таймера: $ticksDuringSync',
+    )
+    ..writeln(
+      'Isolate.run: ${isolateWatch.elapsedMilliseconds} мс, '
+      'результат $isolateResult, тактів таймера: $ticksDuringIsolate',
+    );
+}
+
+/// Показує, що зміна глобальної змінної в ізоляті не видна в основному.
+Future<void> _isolateGlobalDemo() async {
+  globalCounter = 1;
+  final (before, after) = await Isolate.run(() {
+    final before = globalCounter;
+    globalCounter = 100;
+    return (before, globalCounter);
+  });
+  stdout
+    ..writeln('\nУсередині ізолята: було $before, стало $after')
+    ..writeln('В основному ізоляті: $globalCounter');
 }
