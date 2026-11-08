@@ -6,6 +6,7 @@ import 'package:lab3_schedule/async_repository.dart';
 import 'package:lab3_schedule/data.dart';
 import 'package:lab3_schedule/lesson.dart';
 import 'package:lab3_schedule/report.dart';
+import 'package:lab3_schedule/schedule_events.dart';
 
 /// Кількість занять, починаючи з якої викладач вважається завантаженим.
 const heavyLoad = 3;
@@ -94,6 +95,8 @@ Future<void> main() async {
   await _timingDemo();
   await _parallelErrorDemo();
   await _uncaughtErrorDemo();
+  await _streamGeneratorDemo(lessons);
+  await _controllerDemo(lessons);
 }
 
 /// Виводить причину для кожного запису, що не пройшов розбір чи перевірку.
@@ -245,4 +248,55 @@ Future<void> _uncaughtErrorDemo() async {
   } on Exception catch (error) {
     stdout.writeln('  catch спіймав: $error');
   }
+}
+
+/// Показує генератор `async*`, його споживання через `await for` і лінивість.
+Future<void> _streamGeneratorDemo(List<Lesson> lessons) async {
+  final repository = AsyncRepository<Lesson>();
+  for (final lesson in lessons.take(3)) {
+    await repository.save(lesson);
+  }
+
+  stdout.writeln('\nasync* через await for:');
+  await for (final lesson in repository.watchAll()) {
+    stdout.writeln('  надійшло: $lesson');
+  }
+
+  Stream<int> lazyNumbers() async* {
+    stdout.writeln('  тіло генератора почало виконуватись');
+    yield 1;
+  }
+
+  stdout.writeln('Лінивість:');
+  final stream = lazyNumbers();
+  stdout.writeln('  потік створено, підписки ще немає');
+  await Future<void>.delayed(operationDelay);
+  stdout.writeln('  підписуємось');
+  await for (final value in stream) {
+    stdout.writeln('  отримано: $value');
+  }
+}
+
+/// Показує буферизацію `StreamController` і підписку через `listen`.
+Future<void> _controllerDemo(List<Lesson> lessons) async {
+  final source = ScheduleEventSource();
+
+  for (final lesson in lessons.take(3)) {
+    source.add(LessonAdded(lesson));
+  }
+  stdout.writeln('\nТри події додано до підписки');
+
+  final received = <ScheduleEvent>[];
+  final subscription = source.events.listen(received.add);
+  await Future<void>.delayed(Duration.zero);
+  stdout.writeln('Після підписки отримано подій: ${received.length}');
+  for (final event in received) {
+    stdout.writeln('  $event');
+  }
+
+  await subscription.cancel();
+  source.add(LessonRemoved(lessons.first));
+  await Future<void>.delayed(Duration.zero);
+  stdout.writeln('Після скасування отримано подій: ${received.length}');
+  await source.close();
 }

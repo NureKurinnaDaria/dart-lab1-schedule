@@ -9,12 +9,23 @@ const saveDelay = Duration(milliseconds: 200);
 /// Затримка видалення сутності з імітованого джерела даних.
 const deleteDelay = Duration(milliseconds: 200);
 
+/// Інтервал між подіями потоку сховища.
+const watchDelay = Duration(milliseconds: 100);
+
 /// Асинхронне сховище сутностей предметної області.
 class AsyncRepository<T extends Identifiable> {
   final Map<String, T> _items = {};
 
   /// Кількість збережених елементів.
   int get length => _items.length;
+
+  /// Видає сутності по одній у міру «надходження».
+  Stream<T> watchAll() async* {
+    for (final item in _items.values.toList()) {
+      await Future<void>.delayed(watchDelay);
+      yield item;
+    }
+  }
 
   /// Повертає сутність за ідентифікатором [id] або `null`.
   Future<T?> load(String id) async {
