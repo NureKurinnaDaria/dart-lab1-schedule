@@ -102,8 +102,12 @@ sealed class Lesson with Scheduled implements Identifiable {
   /// Назва типу заняття; у кожному підкласі своя.
   String get type;
 
+  /// Ідентифікатор складається з усіх полів, які враховує `==`, тому два
+  /// заняття мають однаковий `id` лише тоді, коли вони рівні.
   @override
-  String get id => '$weekday-$startMinutes-$type-$subject-$room';
+  String get id =>
+      '$weekday-$startMinutes-$type-$subject-$teacher-$room-'
+      '${firstDate.toIso8601String()}';
 
   /// Тривалість заняття в хвилинах; у кожному підкласі своя.
   int get durationMinutes;
