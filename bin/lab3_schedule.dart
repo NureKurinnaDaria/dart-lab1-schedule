@@ -200,7 +200,7 @@ Future<void> _timingDemo() async {
     ..writeln('Одночасно: ${concurrent.elapsedMilliseconds} мс');
 }
 
-/// Порівнює обробку помилок через `Future.wait` і розширення `.wait`.
+/// Порівнює обробку помилки через `Future.wait` і розширення `.wait`.
 Future<void> _parallelErrorDemo() async {
   Future<int> succeed(int id) async {
     await Future<void>.delayed(operationDelay);
@@ -214,14 +214,14 @@ Future<void> _parallelErrorDemo() async {
 
   stdout.writeln('\nFuture.wait:');
   try {
-    await Future.wait([succeed(1), fail(2), fail(3)]);
+    await Future.wait([succeed(1), fail(2), succeed(3)]);
   } on Exception catch (error) {
     stdout.writeln('  помилка: $error');
   }
 
   stdout.writeln('.wait:');
   try {
-    await [succeed(1), fail(2), fail(3)].wait;
+    await [succeed(1), fail(2), succeed(3)].wait;
   } on ParallelWaitError<List<int?>, List<AsyncError?>> catch (error) {
     stdout.writeln('  значення: ${error.values}');
     stdout.writeln('  помилки: ${error.errors.map((e) => e?.error).toList()}');
@@ -311,38 +311,38 @@ Future<void> _controllerDemo(List<Lesson> lessons) async {
   await source.close();
 }
 
-/// Потік, у середині якого виникає помилка: 1, 2, помилка.
-Stream<int> _numbersWithError() async* {
-  yield 1;
-  yield 2;
-  throw Exception('помилка посеред потоку');
+/// Потік 1, 2, помилка, 3, 4: помилка посеред потоку.
+Future<Stream<int>> _numbersWithError() async {
+  final controller = StreamController<int>()
+    ..add(1)
+    ..add(2)
+    ..addError(Exception('помилка посеред потоку'))
+    ..add(3)
+    ..add(4);
+  unawaited(controller.close());
+  return controller.stream;
 }
 
 /// Порівнює поведінку `await for` і `listen` з `cancelOnError: false`.
 Future<void> _streamErrorDemo() async {
   stdout.writeln('\nawait for:');
   try {
-    await for (final value in _numbersWithError()) {
+    await for (final value in await _numbersWithError()) {
       stdout.writeln('  отримано: $value');
     }
   } on Exception catch (error) {
     stdout.writeln('  потік перервано: $error');
   }
 
-  final controller = StreamController<int>();
   stdout.writeln('listen з cancelOnError: false:');
-  final subscription = controller.stream.listen(
+  final done = Completer<void>();
+  final subscription = (await _numbersWithError()).listen(
     (value) => stdout.writeln('  отримано: $value'),
     onError: (Object error) => stdout.writeln('  помилка: $error'),
+    onDone: done.complete,
     cancelOnError: false,
   );
-  controller
-    ..add(1)
-    ..add(2)
-    ..addError(Exception('помилка посеред потоку'))
-    ..add(3)
-    ..add(4);
-  await controller.close();
+  await done.future;
   await subscription.cancel();
 }
 
@@ -351,13 +351,14 @@ Future<void> _singleVsBroadcastDemo() async {
   stdout.writeln('\nОдноразова підписка:');
   final single = StreamController<int>();
   final first = single.stream.listen((value) => stdout.writeln('  1: $value'));
+  StreamSubscription<int>? second;
   try {
-    // ignore: cancel_subscriptions
-    single.stream.listen((value) => stdout.writeln('  2: $value'));
+    second = single.stream.listen((value) => stdout.writeln('  2: $value'));
   } on StateError catch (error) {
     stdout.writeln('  друга підписка: $error');
   }
   await first.cancel();
+  await second?.cancel();
   await single.close();
 
   stdout.writeln('Широкомовна підписка:');
