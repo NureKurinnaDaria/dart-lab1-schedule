@@ -25,6 +25,27 @@ const maskedTopCount = 2;
 /// Тривалість однієї імітованої операції в порівнянні режимів виконання.
 const operationDelay = Duration(milliseconds: 500);
 
+/// Скільки занять беруть демонстрації сховища й потоків.
+const demoLessonCount = 3;
+
+/// Скільки занять подається в конвеєр подій.
+const pipelineLessonCount = 5;
+
+/// Скільки елементів пропускає `take` у конвеєрі.
+const pipelineTakeCount = 3;
+
+/// Період таймера в демонстрації ізолята.
+const timerPeriod = Duration(milliseconds: 10);
+
+/// Початкове значення глобального лічильника.
+const initialCounter = 1;
+
+/// Значення, яке ізолят записує в глобальний лічильник.
+const isolateCounter = 100;
+
+/// У скільки разів зона чекає довше за затримку помилки.
+const zoneWaitFactor = 2;
+
 /// Глобальний лічильник: кожен ізолят має власну копію.
 int globalCounter = 0;
 
@@ -153,7 +174,7 @@ void _printExtras(List<Lesson> lessons) {
 /// Показує асинхронне сховище: збереження, завантаження й видалення.
 Future<void> _printAsyncDemo(List<Lesson> lessons) async {
   final repository = AsyncRepository<Lesson>();
-  for (final lesson in lessons.take(3)) {
+  for (final lesson in lessons.take(demoLessonCount)) {
     await repository.save(lesson);
   }
   stdout.writeln('\nАсинхронне сховище: ${repository.length} занять');
@@ -245,7 +266,7 @@ Future<void> _uncaughtErrorDemo() async {
       } on Exception catch (error) {
         stdout.writeln('  catch спіймав: $error');
       }
-      await Future<void>.delayed(operationDelay * 2);
+      await Future<void>.delayed(operationDelay * zoneWaitFactor);
     },
     (error, stack) {
       stdout.writeln('  потрапила в зону: $error');
@@ -263,7 +284,7 @@ Future<void> _uncaughtErrorDemo() async {
 /// Показує генератор `async*`, його споживання через `await for` і лінивість.
 Future<void> _streamGeneratorDemo(List<Lesson> lessons) async {
   final repository = AsyncRepository<Lesson>();
-  for (final lesson in lessons.take(3)) {
+  for (final lesson in lessons.take(demoLessonCount)) {
     await repository.save(lesson);
   }
 
@@ -291,7 +312,7 @@ Future<void> _streamGeneratorDemo(List<Lesson> lessons) async {
 Future<void> _controllerDemo(List<Lesson> lessons) async {
   final source = ScheduleEventSource();
 
-  for (final lesson in lessons.take(3)) {
+  for (final lesson in lessons.take(demoLessonCount)) {
     source.add(LessonAdded(lesson));
   }
   stdout.writeln('\nТри події додано до підписки');
@@ -375,7 +396,7 @@ Future<void> _singleVsBroadcastDemo() async {
 /// Будує конвеєр над подіями: фільтр, перетворення, обмеження.
 Future<void> _pipelineDemo(List<Lesson> lessons) async {
   final source = ScheduleEventSource();
-  for (final lesson in lessons.take(5)) {
+  for (final lesson in lessons.take(pipelineLessonCount)) {
     source.add(LessonAdded(lesson));
   }
   source.add(LessonRemoved(lessons.first));
@@ -389,7 +410,7 @@ Future<void> _pipelineDemo(List<Lesson> lessons) async {
           LessonRemoved(:final lesson) => 'видалено: $lesson',
         },
       )
-      .take(3);
+      .take(pipelineTakeCount);
   await for (final label in labels) {
     stdout.writeln('  $label');
   }
@@ -399,10 +420,7 @@ Future<void> _pipelineDemo(List<Lesson> lessons) async {
 /// Порівнює важке обчислення в основному ізоляті й в `Isolate.run`.
 Future<void> _isolateDemo() async {
   var ticks = 0;
-  final timer = Timer.periodic(
-    const Duration(milliseconds: 10),
-    (_) => ticks++,
-  );
+  final timer = Timer.periodic(timerPeriod, (_) => ticks++);
 
   final syncWatch = Stopwatch()..start();
   final syncResult = countConflicts(slotCount);
@@ -429,10 +447,10 @@ Future<void> _isolateDemo() async {
 
 /// Показує, що зміна глобальної змінної в ізоляті не видна в основному.
 Future<void> _isolateGlobalDemo() async {
-  globalCounter = 1;
+  globalCounter = initialCounter;
   final (before, after) = await Isolate.run(() {
     final before = globalCounter;
-    globalCounter = 100;
+    globalCounter = isolateCounter;
     return (before, globalCounter);
   });
   stdout

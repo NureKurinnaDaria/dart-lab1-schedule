@@ -90,13 +90,20 @@ sealed class Lesson with Scheduled implements Identifiable {
     return _cache[key] = lesson;
   }
 
+  /// Назва дисципліни.
   final String subject;
+
+  /// Прізвище та ініціали викладача.
   final String teacher;
   @override
   final int weekday;
   @override
   final int startMinutes;
+
+  /// Аудиторія або `DL` для дистанційного заняття.
   final String room;
+
+  /// Дата першого заняття в цьому слоті розкладу.
   final DateTime firstDate;
 
   /// Назва типу заняття; у кожному підкласі своя.
