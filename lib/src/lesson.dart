@@ -90,6 +90,28 @@ sealed class Lesson with Scheduled implements Identifiable {
     return _cache[key] = lesson;
   }
 
+  /// Створює заняття з JSON-об'єкта [json], який повернув [toJson].
+  ///
+  /// Викидає [FormatException], якщо поле відсутнє, має неправильний тип
+  /// або тип заняття невідомий.
+  factory Lesson.fromJson(Map<String, Object?> json) {
+    try {
+      final lesson = Lesson.create(
+        json['type'] as String,
+        subject: json['subject'] as String,
+        teacher: json['teacher'] as String,
+        weekday: json['weekday'] as int,
+        startMinutes: json['startMinutes'] as int,
+        room: json['room'] as String,
+        firstDate: DateTime.parse(json['firstDate'] as String),
+      );
+      if (lesson != null) return lesson;
+    } on TypeError {
+      throw FormatException('поле відсутнє або має неправильний тип', json);
+    }
+    throw FormatException('невідомий тип заняття', json['type']);
+  }
+
   /// Назва дисципліни.
   final String subject;
 
@@ -118,6 +140,17 @@ sealed class Lesson with Scheduled implements Identifiable {
 
   /// Тривалість заняття в хвилинах; у кожному підкласі своя.
   int get durationMinutes;
+
+  /// Перетворює заняття на JSON-об'єкт; тип зберігається в полі `type`.
+  Map<String, Object?> toJson() => {
+    'type': type,
+    'subject': subject,
+    'teacher': teacher,
+    'weekday': weekday,
+    'startMinutes': startMinutes,
+    'room': room,
+    'firstDate': firstDate.toIso8601String(),
+  };
 
   /// Створює підклас за назвою типу або повертає `null`, якщо тип невідомий.
   static Lesson? create(
