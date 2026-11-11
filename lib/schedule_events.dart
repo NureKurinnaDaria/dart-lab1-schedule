@@ -40,6 +40,20 @@ class ScheduleEventSource {
   /// Додає подію до потоку.
   void add(ScheduleEvent event) => _controller.add(event);
 
+  /// Передає в потік помилку [error]; споживач отримає її після значень,
+  /// які були додані раніше.
+  void addError(Object error) => _controller.addError(error);
+
   /// Завершує потік.
   Future<void> close() => _controller.close();
+}
+
+/// Будує конвеєр над подіями: лишає [LessonAdded], перетворює їх на рядки
+/// й обрізає потік після [count] елементів.
+Stream<String> addedLabels(Stream<ScheduleEvent> events, {required int count}) {
+  return events
+      .where((event) => event is LessonAdded)
+      .cast<LessonAdded>()
+      .map((event) => 'нове заняття: ${event.lesson}')
+      .take(count);
 }

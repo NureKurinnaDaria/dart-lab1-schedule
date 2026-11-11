@@ -402,15 +402,7 @@ Future<void> _pipelineDemo(List<Lesson> lessons) async {
   source.add(LessonRemoved(lessons.first));
 
   stdout.writeln('\nКонвеєр where → map → take:');
-  final labels = source.events
-      .where((event) => event is LessonAdded)
-      .map(
-        (event) => switch (event) {
-          LessonAdded(:final lesson) => 'нове заняття: $lesson',
-          LessonRemoved(:final lesson) => 'видалено: $lesson',
-        },
-      )
-      .take(pipelineTakeCount);
+  final labels = addedLabels(source.events, count: pipelineTakeCount);
   await for (final label in labels) {
     stdout.writeln('  $label');
   }
