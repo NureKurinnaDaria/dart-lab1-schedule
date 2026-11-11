@@ -3,6 +3,7 @@ library;
 
 export 'src/analysis.dart';
 export 'src/async_repository.dart';
+export 'src/csv_reader.dart';
 export 'src/data.dart';
 export 'src/heavy.dart';
 export 'src/lesson.dart';
