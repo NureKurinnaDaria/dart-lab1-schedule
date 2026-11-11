@@ -1,6 +1,4 @@
-import 'package:lab3_schedule/data.dart';
-import 'package:lab3_schedule/lesson.dart';
-import 'package:lab3_schedule/schedule_events.dart';
+import 'package:lab4_schedule/lab4_schedule.dart';
 import 'package:test/test.dart';
 
 void main() {

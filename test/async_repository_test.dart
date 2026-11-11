@@ -1,6 +1,4 @@
-import 'package:lab3_schedule/async_repository.dart';
-import 'package:lab3_schedule/data.dart';
-import 'package:lab3_schedule/lesson.dart';
+import 'package:lab4_schedule/lab4_schedule.dart';
 import 'package:test/test.dart';
 
 Lecture _lecture(String teacher) => Lecture(

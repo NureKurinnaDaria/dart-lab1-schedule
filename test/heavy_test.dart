@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:lab3_schedule/heavy.dart';
+import 'package:lab4_schedule/lab4_schedule.dart';
 import 'package:test/test.dart';
 
 void main() {
