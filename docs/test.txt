@@ -1,0 +1,17 @@
+﻿00:00 +0: loading test\async_repository_test.dart
+00:00 +0: test\heavy_test.dart: countConflicts для 0 і 1 слота конфліктів немає
+00:00 +1: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +2: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +3: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +4: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +5: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +6: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +7: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +8: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +9: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +10: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +11: test\async_repository_test.dart: AsyncRepository load неіснуючого id повертає null
+00:00 +12: test\async_repository_test.dart: AsyncRepository delete видаляє заняття, повторне видалення дає false
+00:01 +13: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +14: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +15: All tests passed!
