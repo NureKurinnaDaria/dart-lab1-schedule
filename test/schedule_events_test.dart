@@ -34,17 +34,30 @@ void main() {
     });
   });
 
-  group('потік з помилкою', () {
-    test('помилка потрапляє до споживача після значень', () async {
-      Stream<int> failing() async* {
-        yield 1;
-        throw StateError('збій');
-      }
+  group('addedLabels', () {
+    test('відкидає LessonRemoved і обрізає потік за take', () async {
+      source
+        ..add(LessonAdded(lesson))
+        ..add(LessonRemoved(lesson))
+        ..add(LessonAdded(lesson))
+        ..add(LessonAdded(lesson));
+      final labels = await addedLabels(source.events, count: 2).toList();
+      expect(labels, hasLength(2));
+      expect(labels, everyElement(startsWith('нове заняття')));
+    });
 
-      await expectLater(
-        failing(),
-        emitsInOrder([1, emitsError(isA<StateError>())]),
+    test('помилка джерела проходить крізь конвеєр після значень', () async {
+      final expectation = expectLater(
+        addedLabels(source.events, count: 5),
+        emitsInOrder([
+          startsWith('нове заняття'),
+          emitsError(isA<StateError>()),
+        ]),
       );
+      source
+        ..add(LessonAdded(lesson))
+        ..addError(StateError('збій джерела'));
+      await expectation;
     });
   });
 }
