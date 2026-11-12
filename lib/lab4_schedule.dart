@@ -7,6 +7,8 @@ export 'src/cli.dart';
 export 'src/csv_reader.dart';
 export 'src/data.dart';
 export 'src/heavy.dart';
+export 'src/holiday.dart';
+export 'src/holiday_client.dart';
 export 'src/lesson.dart';
 export 'src/lesson_storage.dart';
 export 'src/report.dart';
