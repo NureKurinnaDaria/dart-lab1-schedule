@@ -13,3 +13,4 @@ linter:
     - prefer_final_locals
     - unawaited_futures
     - discarded_futures
+    - public_member_api_docs

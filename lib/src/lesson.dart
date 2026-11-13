@@ -9,12 +9,25 @@ mixin RemoteCapable on Lesson {
 
 /// День тижня з номером за ISO 8601 (1 — понеділок).
 enum Weekday {
+  /// Понеділок.
   monday(DateTime.monday, 'Понеділок'),
+
+  /// Вівторок.
   tuesday(DateTime.tuesday, 'Вівторок'),
+
+  /// Середа.
   wednesday(DateTime.wednesday, 'Середа'),
+
+  /// Четвер.
   thursday(DateTime.thursday, 'Четвер'),
+
+  /// П’ятниця.
   friday(DateTime.friday, 'П’ятниця'),
+
+  /// Субота.
   saturday(DateTime.saturday, 'Субота'),
+
+  /// Неділя.
   sunday(DateTime.sunday, 'Неділя');
 
   const Weekday(this.number, this.label);
@@ -231,6 +244,7 @@ sealed class Lesson with Scheduled implements Identifiable {
 }
 
 /// Лекція.
+// ignore: public_member_api_docs
 class Lecture({
   required super.subject,
   required super.teacher,
@@ -247,6 +261,7 @@ class Lecture({
 }
 
 /// Практичне заняття.
+// ignore: public_member_api_docs
 class Practice({
   required super.subject,
   required super.teacher,
@@ -263,6 +278,7 @@ class Practice({
 }
 
 /// Лабораторна робота.
+// ignore: public_member_api_docs
 class Lab({
   required super.subject,
   required super.teacher,
@@ -279,6 +295,7 @@ class Lab({
 }
 
 /// Консультація.
+// ignore: public_member_api_docs
 class Consultation({
   required super.subject,
   required super.teacher,

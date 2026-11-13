@@ -9,6 +9,7 @@ sealed class ScheduleEvent {
 
 /// Заняття додано до розкладу.
 class LessonAdded extends ScheduleEvent {
+  /// Створює подію про додане заняття [lesson].
   const LessonAdded(this.lesson);
 
   /// Додане заняття.
@@ -20,6 +21,7 @@ class LessonAdded extends ScheduleEvent {
 
 /// Заняття видалено з розкладу.
 class LessonRemoved extends ScheduleEvent {
+  /// Створює подію про видалене заняття [lesson].
   const LessonRemoved(this.lesson);
 
   /// Видалене заняття.
