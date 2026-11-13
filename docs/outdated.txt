@@ -1,4 +1,0 @@
-﻿Showing outdated packages.
-[*] indicates versions that are not the latest available.
-
-Found no outdated packages

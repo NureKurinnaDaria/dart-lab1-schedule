@@ -1,4 +1,4 @@
-/// Розклад занять групи: модель, аналіз, сховища та події.
+/// Розклад занять групи: модель, аналіз, сховища, події, CLI та HTTP-сервіс.
 library;
 
 export 'src/analysis.dart';
@@ -13,3 +13,4 @@ export 'src/lesson.dart';
 export 'src/lesson_storage.dart';
 export 'src/report.dart';
 export 'src/schedule_events.dart';
+export 'src/service.dart';
