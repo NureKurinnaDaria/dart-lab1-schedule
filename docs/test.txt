@@ -1,5 +1,5 @@
 ﻿00:00 +0: loading test\async_repository_test.dart
-00:00 +0: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +0: test\cli_holidays_test.dart: команда holidays друкує свята з днем тижня
 00:00 +1: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +2: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +3: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
@@ -15,9 +15,9 @@
 00:00 +13: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +14: test\cli_test.dart: runCli import зберігає заняття, а report друкує їх
 00:00 +15: test\holiday_client_test.dart: HolidayClient розбирає відповідь і звертається за правильною адресою
-00:00 +16: test\holiday_client_test.dart: HolidayClient розбирає відповідь і звертається за правильною адресою
-00:00 +17: test\holiday_client_test.dart: HolidayClient розбирає відповідь і звертається за правильною адресою
-00:00 +18: test\holiday_client_test.dart: HolidayClient розбирає відповідь і звертається за правильною адресою
+00:00 +16: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +17: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +18: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
 00:00 +19: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
 00:00 +20: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
 00:00 +21: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
@@ -47,24 +47,24 @@
 00:01 +45: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
 00:01 +46: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
 00:01 +47: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
-00:01 +48: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
-00:01 +49: test\service_test.dart: GET /items повертає всі заняття з номерами
-00:01 +50: test\service_test.dart: GET /items повертає всі заняття з номерами
-00:01 +51: test\service_test.dart: GET /items повертає всі заняття з номерами
-00:01 +52: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +53: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +54: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +55: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +56: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +57: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +58: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:01 +59: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +60: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +61: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +62: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +63: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +64: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +65: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +66: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:01 +48: test\service_test.dart: GET /items повертає всі заняття з номерами
+00:02 +49: test\service_test.dart: GET /items повертає всі заняття з номерами
+00:02 +50: test\service_test.dart: GET /items повертає всі заняття з номерами
+00:02 +51: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +52: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +53: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +54: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +55: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +56: test\service_test.dart: GET /items некоректний weekday дає 400
+00:02 +57: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +58: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +59: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +60: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +61: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +62: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +63: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +64: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +65: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +66: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
 00:02 +67: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
 00:02 +68: All tests passed!
