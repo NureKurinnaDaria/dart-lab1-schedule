@@ -1,5 +1,5 @@
 ﻿00:00 +0: loading test\async_repository_test.dart
-00:00 +0: test\heavy_test.dart: countConflicts для 0 і 1 слота конфліктів немає
+00:00 +0: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +1: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +2: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +3: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
@@ -10,8 +10,58 @@
 00:00 +8: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +9: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
 00:00 +10: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
-00:00 +11: test\async_repository_test.dart: AsyncRepository load неіснуючого id повертає null
-00:00 +12: test\async_repository_test.dart: AsyncRepository delete видаляє заняття, повторне видалення дає false
-00:01 +13: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
-00:02 +14: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
-00:02 +15: All tests passed!
+00:00 +11: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +12: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +13: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +14: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +15: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +16: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +17: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +18: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +19: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +20: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +21: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +22: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +23: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +24: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +25: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +26: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +27: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +28: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +29: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +30: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +31: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +32: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +33: test\async_repository_test.dart: AsyncRepository save і load повертають збережене заняття
+00:00 +34: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +35: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +36: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +37: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +38: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +39: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +40: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +41: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +42: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +43: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +44: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +45: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +46: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +47: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +48: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +49: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:00 +50: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +51: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +52: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +53: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +54: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +55: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +56: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +57: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +58: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +59: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +60: test\csv_reader_test.dart: readLessonsFromCsv читає великий файл рядок за рядком
+00:01 +61: test\async_repository_test.dart: AsyncRepository delete видаляє заняття, повторне видалення дає false
+00:01 +62: test\async_repository_test.dart: AsyncRepository delete видаляє заняття, повторне видалення дає false
+00:01 +63: test\async_repository_test.dart: AsyncRepository різні викладачі дають різні id, обидва заняття зберігаються
+00:02 +64: test\async_repository_test.dart: watchAll видає заняття в порядку збереження
+00:02 +65: All tests passed!

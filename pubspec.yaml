@@ -1,6 +1,6 @@
 name: lab4_schedule
 description: Розклад занять групи ПЗПІ-23-9, лабораторна робота 4.
-version: 1.0.0
+version: 2.0.0
 
 environment:
   sdk: ^3.13.2
