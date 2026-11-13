@@ -115,8 +115,8 @@ List<Lesson> sortLessons(
   return descending ? sorted.reversed.toList() : sorted;
 }
 
-/// Назва дня тижня за номером (1 — понеділок).
-String weekdayName(int weekday) => weekdayNames[weekday - DateTime.monday];
+/// Назва дня тижня за номером (1 — понеділок); `?` для номера поза 1-7.
+String weekdayName(int weekday) => Weekday.fromNumber(weekday)?.label ?? '?';
 
 /// Час від першого заняття до `now`; від’ємний, якщо воно ще попереду.
 Duration timeSinceFirst(Lesson lesson, {DateTime? now}) =>

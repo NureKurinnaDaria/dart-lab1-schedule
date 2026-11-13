@@ -11,7 +11,8 @@
   `POST /items`, request logging middleware.
 - Added dependencies: `path`, `args`, `http`, `shelf`, `shelf_router`.
 - Added `public_member_api_docs` lint; documented the public API.
-- Tests: 15 -> 65.
+- Removed duplicated weekday names: `Weekday` is the single source.
+- Tests: 15 -> 68.
 
 ## 1.0.0
 
