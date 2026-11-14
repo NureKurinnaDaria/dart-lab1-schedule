@@ -1,5 +1,5 @@
 ﻿Dart SDK 3.13.2
-lab4_schedule 1.0.0
+lab4_schedule 2.0.0
 ├── args 2.7.0
 ├── http 1.6.0
 │   ├── async 2.13.1
